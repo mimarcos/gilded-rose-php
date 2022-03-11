@@ -4,6 +4,8 @@ namespace GildedRose;
 
 include_once('Item.php');
 include_once('GildedRose.php');
+include_once('Ager.php');
+include_once('agers/BrieAger.php');
 
 $items = [
     new Item('Aged Brie', 10, 40),

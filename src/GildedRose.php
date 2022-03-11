@@ -11,57 +11,41 @@ final class GildedRose
      */
     private $items;
 
+    public function priority_sort($a, $b) {
+        return $a->getPriority() - $b->getPriority();
+    }
+
     public function __construct(array $items)
     {
         $this->items = $items;
+        $this->agers = [];
+
+        foreach (glob('src/agers/*.php') as $file) {
+            include_once $file;
+
+            // get the file name of the current file without the extension
+            // which is essentially the class name
+            $class = "GildedRose\\".basename($file, '.php');
+            if (class_exists($class)) {
+                echo("Loading class " . $class);
+                $obj = new $class;
+                array_push($this->agers, $obj);
+            }
+            else {
+                echo("Class does not exist " . $class);
+            }
+        }
+        usort($this->agers, array("GildedRose\GildedRose", "priority_sort"));
+
     }
 
     public function updateQuality(): void
     {
         foreach ($this->items as $item) {
-            if ($item->name != 'Aged Brie' and $item->name != 'Backstage passes to a TAFKAL80ETC concert') {
-                if ($item->quality > 0) {
-                    if ($item->name != 'Sulfuras, Hand of Ragnaros') {
-                        $item->quality = $item->quality - 1;
-                    }
-                }
-            } else {
-                if ($item->quality < 50) {
-                    $item->quality = $item->quality + 1;
-                    if ($item->name == 'Backstage passes to a TAFKAL80ETC concert') {
-                        if ($item->sell_in < 11) {
-                            if ($item->quality < 50) {
-                                $item->quality = $item->quality + 1;
-                            }
-                        }
-                        if ($item->sell_in < 6) {
-                            if ($item->quality < 50) {
-                                $item->quality = $item->quality + 1;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if ($item->name != 'Sulfuras, Hand of Ragnaros') {
-                $item->sell_in = $item->sell_in - 1;
-            }
-
-            if ($item->sell_in < 0) {
-                if ($item->name != 'Aged Brie') {
-                    if ($item->name != 'Backstage passes to a TAFKAL80ETC concert') {
-                        if ($item->quality > 0) {
-                            if ($item->name != 'Sulfuras, Hand of Ragnaros') {
-                                $item->quality = $item->quality - 1;
-                            }
-                        }
-                    } else {
-                        $item->quality = $item->quality - $item->quality;
-                    }
-                } else {
-                    if ($item->quality < 50) {
-                        $item->quality = $item->quality + 1;
-                    }
+            foreach ($this->agers as $ager) {
+                if($ager->shouldProcessItem($item)) {
+                    $ager->processItem($item);
+                    break;
                 }
             }
         }
