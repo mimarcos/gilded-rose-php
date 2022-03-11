@@ -27,7 +27,7 @@ final class GildedRose
 
             // Use the file name to determine the candidate class name
             $class = "GildedRose\\".basename($file, '.php');
-            if (class_exists($class)) {
+            if (class_exists($class) and is_subclass_of($class, "GildedRose\\Ager")) {
                 array_push($this->agers, new $class);
             }
         }
