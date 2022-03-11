@@ -1,7 +1,7 @@
 <?php
 namespace GildedRose;
 
-class BrieAger implements Ager {
+class BrieAger extends Ager {
     public function getPriority() {
         return 20;
     }
@@ -10,7 +10,7 @@ class BrieAger implements Ager {
         return $item->name == "Aged Brie";
     }
 
-    public function processItem(Item $item) {
+    public function updateQuality(Item $item) {
         if($item->sell_in > 0) {
             $item->quality += 1;
         }

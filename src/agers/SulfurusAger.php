@@ -1,7 +1,7 @@
 <?php
 namespace GildedRose;
 
-class SulfurusAger implements Ager {
+class SulfurusAger extends Ager {
     public function getPriority() {
         return 20;
     }
@@ -10,7 +10,15 @@ class SulfurusAger implements Ager {
         return $item->name == "Sulfuras, Hand of Ragnaros";
     }
 
-    public function processItem(Item $item) {
+    public function updateQuality(Item $item) {
         // no-op This legendary stuff never ages.
+    }
+
+    public function ageItem(Item $item) {
+        // no-op This legendary stuff never ages.
+    }
+
+    protected function checkQualityMaxBounds(Item $item) {
+        // no-op (quality can be anything, even >50).
     }
 }

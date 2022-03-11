@@ -18,33 +18,27 @@ final class GildedRose
     public function __construct(array $items)
     {
         $this->items = $items;
-        $this->agers = [];
 
+        # Dynamically load all agers from subdirectory (need a better discovery method)
+        $this->agers = [];
         foreach (glob('src/agers/*.php') as $file) {
             include_once $file;
 
-            // get the file name of the current file without the extension
-            // which is essentially the class name
+            // Use the file name to determine the candidate class name
             $class = "GildedRose\\".basename($file, '.php');
             if (class_exists($class)) {
-                echo("Loading class " . $class);
-                $obj = new $class;
-                array_push($this->agers, $obj);
-            }
-            else {
-                echo("Class does not exist " . $class);
+                array_push($this->agers, new $class);
             }
         }
+        # Sort Agers by priority for precedence rules
         usort($this->agers, array("GildedRose\GildedRose", "priority_sort"));
-
     }
 
     public function updateQuality(): void
     {
         foreach ($this->items as $item) {
             foreach ($this->agers as $ager) {
-                if($ager->shouldProcessItem($item)) {
-                    $ager->processItem($item);
+                if($ager->processItem($item)) {
                     break;
                 }
             }
