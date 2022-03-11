@@ -11,10 +11,12 @@ class BrieAger extends Ager {
     }
 
     public function updateQuality(Item $item) {
-        if($item->sell_in > 0) {
+        if($item->sell_in > 0)
+        {
             $item->quality += 1;
         }
-        else {
+        else
+        {
             $item->quality += 2;
         }
     }

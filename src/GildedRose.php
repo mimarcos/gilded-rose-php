@@ -20,6 +20,7 @@ final class GildedRose
         $this->items = $items;
 
         # Dynamically load all agers from subdirectory (need a better discovery method)
+        # could also allow for plugins to load others
         $this->agers = [];
         foreach (glob('src/agers/*.php') as $file) {
             include_once $file;
